@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 public class Enemy_AttackState : EnemyState
 {
-    private float attackCooldown;
     public Enemy_AttackState(StateMachine stateMachine, string animBoolName, Enemy enemy) : base(stateMachine, animBoolName, enemy)
     {
     }
@@ -21,6 +20,12 @@ public class Enemy_AttackState : EnemyState
         {
             stateMachine.ChangeState(enemy.battleState);
         }
+    }
+
+    public override void Exit()
+    {
+        base.Exit();
+        enemy.currentAttackCooldown = enemy.attackCooldown;
     }
     
 }

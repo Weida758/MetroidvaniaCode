@@ -32,7 +32,10 @@ public class Enemy : Character
     [Header("Battle Details")] 
     public float battleTimeDuration;
     public FloatVariable attackDistance;
-    public float attackCooldown;
+    [field: SerializeField] public  float attackCooldown { get; private set; }
+    public float currentAttackCooldown;
+    
+    [ReadOnly] public float time;
     public Transform player { get; private set; }
 
     protected override void Awake()
@@ -73,6 +76,12 @@ public class Enemy : Character
         }
         this.player = player;
         stateMachine.ChangeState(battleState);
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+        time = Time.time;
     }
 
     protected override void OnDrawGizmos()

@@ -6,7 +6,6 @@ public class Enemy_BattleState : EnemyState
 
     private Transform playerTransform;
     private float lastTimeInBattle;
-    private float attackCooldown;
     public Enemy_BattleState(StateMachine stateMachine, string animBoolName, Enemy enemy) : base(stateMachine, animBoolName, enemy)
     {
     }
@@ -18,11 +17,9 @@ public class Enemy_BattleState : EnemyState
         {
             playerTransform = enemy.PlayerDetection().transform;
         }
-        
+        UpdateBattleTimer();
         //null check, if null, assign to enemy's reference of the player
         playerTransform ??= enemy.player;
-
-        attackCooldown = enemy.attackCooldown;
         enemy.movementComponent.moveSpeed *= 2;
         Debug.Log("I Entered Battle State");
     }
@@ -30,9 +27,9 @@ public class Enemy_BattleState : EnemyState
     public override void Update()
     {
         base.Update();
-        attackCooldown -= Time.deltaTime;
+        enemy.currentAttackCooldown -= Time.deltaTime;
 
-        if (enemy.PlayerDetection() == true)
+        if (enemy.PlayerDetection())
         {
             UpdateBattleTimer();
         }
@@ -44,9 +41,9 @@ public class Enemy_BattleState : EnemyState
             return;
         }
         
-        if (WithinAttackRange() && playerTransform.position.y < enemy.spriteBoundY + 2)
+        if (WithinAttackRange() && enemy.facingDir == DirectionToPlayer() && playerTransform.position.y < enemy.spriteBoundY + 2)
         {
-            if (attackCooldown <= 0)
+            if (enemy.currentAttackCooldown <= 0)
             {
                 stateMachine.ChangeState(enemy.attackState);
             }

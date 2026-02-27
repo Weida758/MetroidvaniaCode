@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -28,7 +29,17 @@ public class Health : MonoBehaviour, IDamageable
         {
             HandleDefeat();
         }
+
+        StartCoroutine(DamageEffect());
         Debug.Log("Taking Damage");
+    }
+
+    private IEnumerator DamageEffect()
+    {
+        gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.red;
+        yield return new WaitForSeconds(0.15f);
+        gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+        Debug.Log("returning to original color");
     }
 
     public virtual void Heal(float heal)

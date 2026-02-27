@@ -7,7 +7,7 @@ public class Weapon : MonoBehaviour
 {
     [SerializeField] public SO_Weapon weaponData;
     [SerializeField] private LayerMask damageableLayers;
-    private Player player;
+    [SerializeField] private Transform player;
     [field: FormerlySerializedAs("<hitboxes>k__BackingField")] [field: SerializeField] public Transform[] basicHitboxes { get; private set; }
 
     private void Awake()
@@ -17,7 +17,6 @@ public class Weapon : MonoBehaviour
             Debug.LogError("Amount of hitbox does not match amount of basic attacks");
         }
         
-        player = GetComponentInParent<Player>();
         if (player == null)
         {
             Debug.LogWarning("No player holding weapon");
@@ -31,7 +30,8 @@ public class Weapon : MonoBehaviour
 
         foreach (Collider2D col in colliders)
         {
-            col.GetComponent<IDamageable>().TakeDamage(weaponData.attackPower, player.transform);
+            IDamageable damageable = col.GetComponent<IDamageable>();
+            damageable?.TakeDamage(weaponData.attackPower, player);
         }
         
     }
